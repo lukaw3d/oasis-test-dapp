@@ -1,5 +1,5 @@
 
-// @ts-nocheck
+// @ts-check
 import * as oasis from '@oasisprotocol/client';
 import * as oasisExt from '@oasisprotocol/client-ext-utils';
 
@@ -26,13 +26,13 @@ async function publicKeyToAddress(keyObj){
     account.public_key = public_key
     account.address = address
   }
-  
+
   return address
 }
 
 /**
  * use grpc get nonce
- * @param {*} address 
+ * @param {*} address
  */
 async function getNonce(address) {
   const oasisClient = getOasisClient()
@@ -45,7 +45,7 @@ async function getNonce(address) {
 }
 /**
  * use grpc get nonce
- * @param {*} address 
+ * @param {*} address
  */
 async function getUseBalance(address) {
   const oasisClient = getOasisClient()
@@ -61,7 +61,7 @@ async function getUseBalance(address) {
 }
 /**
  * get grpc client
- * @returns 
+ * @returns
  */
 function getOasisClient() {
   const oasisClient = new oasis.client.NodeInternal('https://grpc-testnet.oasisscan.com')
@@ -73,39 +73,49 @@ function getOasisClient() {
  * 获取html div
  */
 
+/**
+ * @type {{
+ * (input: `${string}Input`): HTMLInputElement;
+ * (input: `${string}Button`): HTMLButtonElement;
+ * (input: string): HTMLElement;
+ * }}
+ */
+const getById = (id) => {
+  const element = document.getElementById(id)
+  if (!element) throw new Error(`Element #${id} not found`)
+  return element
+}
 
 /** top account detail */
-const accountsDiv = document.getElementById('accounts')
-const balanceDiv = document.getElementById('balance')
-const nonceDiv = document.getElementById('nonce')
+const accountsDiv = getById('accounts')
+const balanceDiv = getById('balance')
+const nonceDiv = getById('nonce')
 
 
 /** connect and get account */
- const extensionIdInput = document.getElementById('extensionIdInput')
- const onboardButton = document.getElementById('connectButton')
- const getAccountsButton = document.getElementById('getAccounts')
- const accountsResults = document.getElementById('getAccountsResult')
+ const extensionIdInput = getById('extensionIdInput')
+ const onboardButton = getById('connectButton')
+ const getAccountsButton = getById('getAccounts')
+ const accountsResults = getById('getAccountsResult')
 
 
 /** send  transaction*/
- const sendButton2 = document.getElementById('sendButton')
- const sendAmountInput = document.getElementById('sendAmountInput')
- const receiveAddressInput = document.getElementById('receiveAddressInput')
+ const sendButton2 = getById('sendButton')
+ const sendAmountInput = getById('sendAmountInput')
+ const receiveAddressInput = getById('receiveAddressInput')
 
- const sendNonceInput = document.getElementById('sendNonceInput')
- const sendResultDisplay = document.getElementById('sendResultDisplay')
+ const sendNonceInput = getById('sendNonceInput')
+ const sendResultDisplay = getById('sendResultDisplay')
 
 
 
  /** add escrow about */
- const addEscrowButton = document.getElementById('addEscrowButton')
- const addEscrowAmountInput = document.getElementById('addEscrowAmountInput')
- const vaildatorAddressInput = document.getElementById('vaildatorAddressInput')
- const addEscrowResultDisplay = document.getElementById('addEscrowResultDisplay')
+ const addEscrowButton = getById('addEscrowButton')
+ const addEscrowAmountInput = getById('addEscrowAmountInput')
+ const validatorAddressInput = getById('validatorAddressInput')
+ const addEscrowResultDisplay = getById('addEscrowResultDisplay')
 
- const stakeNonceInput = document.getElementById('stakeNonceInput')
- const stakeFeeGasInput = document.getElementById('stakeFeeGasInput')
- const stakeFeeAmountInput = document.getElementById('stakeFeeAmountInput')
+ const stakeNonceInput = getById('stakeNonceInput')
 
 
 //==============================================================================
@@ -121,67 +131,64 @@ const playground = (async function () {
     oasisExt.keys.setKeysChangeHandler(conn, async (event) => {
       setAccountDetailClear()
       // 拿到新的key后更新 当前账户及别的
-  
+
       let keys = event.keys
       if(keys.length>0){
         let address = await publicKeyToAddress(keys[0])
-        accountsResults.innerHTML = address || 'Not able to get accounts'
+        accountsResults.textContent = address || 'Not able to get accounts'
         await setAccountDetail(address)
       }
   });
   }
-  
+
 
   // 1,点击connect 去连接账户
   // 2，如果有connect ，则可以点击获取账户
 
 
-  // 3，输入转账金额和收款地址 
+  // 3，输入转账金额和收款地址
   // 获取签名者
   // 打包交易
   // 4，签名
 
 
   onboardButton.onclick = async () => {
-    let extensionId = extensionIdInput.value || 'ppdadbejkmjnefldpcdjhnkpbjkikoip';
-    // aeiciliacehpifhikhkgkmohihocgain
-    // blgopabeahlgefobchbgbkekajmbnfmh   ext
-    // fdkfkdobkkgngljecckfaeiabkinnnij     my ext
+    let extensionId = extensionIdInput.value
 
     // todo 1 如何判断已经安装插件
     if (!connection) {
       // alert("请先安装oasis-extension-wallet")
-      onboardButton.innerText = 'Onboarding in progress'
+      onboardButton.textContent = 'Onboarding in progress'
       connection = await oasisExt.connection.connect("chrome-extension://" + extensionId, extPath);
       if (connection) {
         watchKeys(connection);
 
-        onboardButton.innerText = 'Connected'
+        onboardButton.textContent = 'Connected'
         onboardButton.disabled = true
       } else {
-        onboardButton.innerText = 'Connect'
+        onboardButton.textContent = 'Connect'
         onboardButton.disabled = false
       }
     } else {
-      onboardButton.innerText = 'Connected'
+      onboardButton.textContent = 'Connected'
       onboardButton.disabled = true
     }
   }
 
   function setAccountDetailClear() {
-    accountsDiv.innerHTML = ""
-    accountsResults.innerHTML = "" 
+    accountsDiv.textContent = ""
+    accountsResults.textContent = ""
 
-    balanceDiv.innerHTML = "0"
-    nonceDiv.innerHTML = "null"
+    balanceDiv.textContent = "0"
+    nonceDiv.textContent = "null"
   }
   async function setAccountDetail(address) {
 
-    accountsDiv.innerHTML = address
+    accountsDiv.textContent = address
     let accountDetail = await getUseBalance(address)
 
-    balanceDiv.innerHTML = accountDetail.balance / 1e9
-    nonceDiv.innerHTML = accountDetail.nonce
+    balanceDiv.textContent = (accountDetail.balance / 1e9).toString()
+    nonceDiv.textContent = accountDetail.nonce
   }
   /**
    * get account
@@ -198,10 +205,10 @@ const playground = (async function () {
         // 授权完账后就开始渲染账户情况
         // 获取账户余额 和nonce  然后显示在页面上
         // nonce 显示在输入框里 和html外面
-        accountsResults.innerHTML = result || 'Not able to get accounts'
+        accountsResults.textContent = result || 'Not able to get accounts'
       } else {
         result = keys.error
-        accountsResults.innerHTML = result || 'Not able to get accounts'
+        accountsResults.textContent = result || 'Not able to get accounts'
       }
     }
   }
@@ -231,11 +238,9 @@ const playground = (async function () {
       let accountDetail = await getUseBalance(from)
       //第五步 获取收款地址
 
-      let sendAmount = sendAmountInput.value || 3*1e9
-      sendAmount = oasis.quantity.fromBigInt(sendAmount)
+      let sendAmount =  oasis.quantity.fromBigInt(BigInt(sendAmountInput.value))
 
-      let receiveAddress = receiveAddressInput.value || "oasis1qzaa7s3df8ztgdryn8u8zdsc8zx0drqsa5eynmam"
-      receiveAddress = await oasis.staking.addressFromBech32(receiveAddress)
+      let receiveAddress = await oasis.staking.addressFromBech32(receiveAddressInput.value || "oasis1qzaa7s3df8ztgdryn8u8zdsc8zx0drqsa5eynmam")
 
       let sendNonce = sendNonceInput.value || accountDetail.nonce
 
@@ -268,9 +273,9 @@ const playground = (async function () {
 
       let hash = await tw.hash()
 
-      sendResultDisplay.innerHTML = hash || ''
+      sendResultDisplay.textContent = hash || ''
     } catch (error) {
-      sendResultDisplay.innerHTML = error || ''
+      sendResultDisplay.textContent = error || ''
     }
   }
 
@@ -294,11 +299,9 @@ const playground = (async function () {
     let accountDetail = await getUseBalance(from)
     //第五步 获取收款地址
 
-    let addEscrowAmount = addEscrowAmountInput.value || 100*1e9
-    addEscrowAmount = oasis.quantity.fromBigInt(addEscrowAmount)
+    let addEscrowAmount =  oasis.quantity.fromBigInt(BigInt(addEscrowAmountInput.value))
 
-    let vaildatorAddress = vaildatorAddressInput.value || "oasis1qqv25adrld8jjquzxzg769689lgf9jxvwgjs8tha"
-    vaildatorAddress = await oasis.staking.addressFromBech32(vaildatorAddress)
+    let validatorAddress = await oasis.staking.addressFromBech32(validatorAddressInput.value || "oasis1qqv25adrld8jjquzxzg769689lgf9jxvwgjs8tha")
 
     let sendNonce = stakeNonceInput.value || accountDetail.nonce
 
@@ -312,7 +315,7 @@ const playground = (async function () {
     tw.setFeeAmount(oasis.quantity.fromBigInt(BigInt(lastFeeAmount)))
 
     tw.setBody({
-      account: vaildatorAddress,
+      account: validatorAddress,
       amount: addEscrowAmount,
     })
     let feeGas = await tw.estimateGas(oasisClient, publicKey)
@@ -331,7 +334,7 @@ const playground = (async function () {
 
     let hash = await tw.hash()
 
-    addEscrowResultDisplay.innerHTML = hash || ''
+    addEscrowResultDisplay.textContent = hash || ''
   }
 })();
 
