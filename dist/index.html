@@ -69,7 +69,13 @@
                 Basic Actions
               </h4>
 
-              <input class="form-control" type="text" placeholder="Extension ID (Option)" id="extensionIdInput" />
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Extension ID (Option)"
+                id="extensionIdInput"
+                value="ppdadbejkmjnefldpcdjhnkpbjkikoip"
+              />
               <hr />
 
               <button class="btn btn-primary btn-lg btn-block mb-3" id="connectButton">
@@ -99,10 +105,10 @@
                 <!-- // 设置nonce -->
                 <!-- // 设置feeGas -->
                 <!-- // 设置feeAmount -->
-                <input class="form-control" type="text" placeholder="Set send amount" id="sendAmountInput" />
+                <input class="form-control" type="text" placeholder="Set send amount" id="sendAmountInput" value="3000000000" />
                 <hr />
                 <input class="form-control" type="text" placeholder="Set receive address" id="receiveAddressInput" />
-                
+
                 <hr />
                 <input class="form-control" type="text" placeholder="Set Nonce (Option)" id="sendNonceInput" />
 
@@ -112,7 +118,7 @@
                 <hr />
                 <input class="form-control" type="text" placeholder="Set FeeAmount (Option)" id="sendFeeAmountInput" /> -->
 
-               
+
                 <hr />
                 <button class="btn btn-primary btn-lg btn-block mb-3" id="sendButton">
                   Send
@@ -133,15 +139,15 @@
               </h4>
               <hr />
               <div id="encrypt-message-form">
-                <input class="form-control" type="text" placeholder="Set stake amount" id="addEscrowAmountInput" />
+                <input class="form-control" type="text" placeholder="Set stake amount" id="addEscrowAmountInput" value="100000000000"/>
                 <hr />
-                <input class="form-control" type="text" placeholder="Set vaildator address"
-                  id="vaildatorAddressInput" />
+                <input class="form-control" type="text" placeholder="Set validator address"
+                  id="validatorAddressInput" />
 
 
                   <hr />
                   <input class="form-control" type="text" placeholder="Set Nonce (Option)" id="stakeNonceInput" />
-  
+
                 <hr />
                 <button class="btn btn-primary btn-lg btn-block mb-3" id="addEscrowButton">
                   addEscrow
@@ -156,8 +162,8 @@
         </div>
       </div>
     </section>
+    <a href="https://github.com/lukaw3d/oasis-test-dapp">GitHub Source</a>
 
-    
   </main>
 
   <script src="bundle.js" defer></script>
